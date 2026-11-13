@@ -2,7 +2,7 @@
 // (steer or follow up), stop them mid-answer, and list them. Subagents keep working while the main agent
 // answers the user, and each answer is delivered back to the main agent as a new message once it arrives. Everything
 // survives a restart: the example closes the Harness while a subagent works and reopens it.
-// Uses OpenAI when OPENAI_API_KEY is set, and a scripted faux model otherwise.
+// Uses OpenRouter when OPENROUTER_API_KEY is set, and a scripted faux model otherwise.
 // Run from packages/durable:
 //   node --conditions=source --experimental-strip-types test/examples/22-subagent-background.ts
 
@@ -13,7 +13,7 @@ import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
 import type { AssistantMessage, FauxResponseStep } from "@earendil-works/pi-ai";
 import { createModels } from "@earendil-works/pi-ai/models";
 import { fauxAssistantMessage, fauxProvider, fauxText, fauxToolCall } from "@earendil-works/pi-ai/providers/faux";
-import { openaiProvider } from "@earendil-works/pi-ai/providers/openai";
+import { openrouterProvider } from "@earendil-works/pi-ai/providers/openrouter";
 import { bool, obj, oneOf, opt, str } from "@earendil-works/pi-schema";
 import {
 	AssistantEntry,
@@ -214,9 +214,9 @@ const SubagentTools = defineExtension({ name: "subagent-tools", tasks: [Anchor, 
 // ─── Host setup ─────────────────────────────────────────────────────────────
 
 const models = createModels();
-let model = { provider: "openai", modelId: "gpt-6-sol" };
-if (process.env.OPENAI_API_KEY !== undefined) {
-	models.setProvider(openaiProvider());
+let model = { provider: "openrouter", modelId: "openai/gpt-4o-mini" };
+if (process.env.OPENROUTER_API_KEY !== undefined) {
+	models.setProvider(openrouterProvider());
 } else {
 	// The main agent and the subagent share one scripted model, which answers each request by its last message.
 	// It streams its answers at 50 tokens per second, like a slow real model.

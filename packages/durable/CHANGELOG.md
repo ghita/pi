@@ -10,6 +10,7 @@
 
 ### Changed
 
+- Updated the background subagent example to use OpenRouter when `OPENROUTER_API_KEY` is set; without a key, it uses the scripted faux model.
 - `SqliteStorage.commit()` costs a few SQL statements per call instead of about eight per batch: it reads the check state of all batches up front, checks them in memory, and writes the accepted batches per table in multi-row statements (rows as one JSON array parameter; rows with much text bound column by column), so a group commit over a remote SQLite takes a few round trips, not hundreds. A stored document record that cannot be parsed now rejects the call as a storage failure instead of refusing the batch.
 
 ### Fixed
