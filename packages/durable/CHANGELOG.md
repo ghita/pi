@@ -22,6 +22,10 @@
 - Hooks that start tasks: `afterTools` and `onYield` hooks may return `{ tasks }`, run as the generation's children. An `afterTools` task ends the run with `{ terminate: true }` (`AfterToolsDecision`) or answers it with a steer; `onYield` tasks decide whether an answer stands while the run's inputs stay open (`pi.live.run.yield`): once all are terminal, the first in creation order that completed with a valid `{ continue }` (`YieldDecision`) continues the run, unless a user message or a reset was queued meanwhile.
 - Examples 38-46: signals, asking a person, a tool that waits for a webhook, a tool that polls, parallel nested calls, a subagent that waits, an approval gate, a review on yield, and an `afterTools` task that ends the run.
 
+### Changed
+
+- Updated the background subagent example to use OpenRouter when `OPENROUTER_API_KEY` is set; without a key, it uses the scripted faux model.
+
 ### Fixed
 
 - `read` no longer adds a diagnostic saying the current model does not support images, which stayed in the tool result after switching to a vision model; the image is still replaced with a placeholder per request for models without image input, and `details.imageUnsupportedByModel` names such a model for UIs ([#12131](https://github.com/earendil-works/pi/issues/12131))
@@ -41,7 +45,6 @@
 
 ### Changed
 
-- Updated the background subagent example to use OpenRouter when `OPENROUTER_API_KEY` is set; without a key, it uses the scripted faux model.
 - `SqliteStorage.commit()` costs a few SQL statements per call instead of about eight per batch: it reads the check state of all batches up front, checks them in memory, and writes the accepted batches per table in multi-row statements (rows as one JSON array parameter; rows with much text bound column by column), so a group commit over a remote SQLite takes a few round trips, not hundreds. A stored document record that cannot be parsed now rejects the call as a storage failure instead of refusing the batch.
 
 ### Fixed
